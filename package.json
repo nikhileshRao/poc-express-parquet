@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "retrieve-data": "node server.js"
+    "retrieve-data": "node scripts/retrieve-parquet.js"
   },
   "keywords": [],
   "author": "",

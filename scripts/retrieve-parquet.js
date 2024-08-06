@@ -9,7 +9,7 @@ const port = 3000;
 app.get('/read-parquet', async (req, res) => {
     try {
         // Path to your Parquet file
-        const filePath = path.join(__dirname, 'data', 'sample.parquet');
+        const filePath = path.join(__dirname,'../data', 'sample.parquet');
         
         // Open and read the Parquet file
         const reader = await parquet.ParquetReader.openFile(filePath);
