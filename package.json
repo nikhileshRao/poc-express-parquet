@@ -5,12 +5,15 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "retrieve-data": "node scripts/retrieve-parquet.js"
+    "retrieve-data": "node scripts/retrieve-parquet.js",
+    "fetch-Access-Token": "node scripts/fetchAccessToken.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@adobe/aemcs-api-client-lib": "github:adobe/aemcs-api-client-lib",
+    "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "parquetjs": "^0.11.2"
   }
