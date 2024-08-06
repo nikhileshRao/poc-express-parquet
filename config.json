@@ -3,5 +3,9 @@
         "url": "https://ims-na1.adobelogin.com/ims/token/v3",
         "grant_type" : "client_credentials",
         "scope":  "cjm.suppression_service.client.delete,cjm.suppression_service.client.all,openid,session,AdobeID,read_organizations,additional_info.projectedProductContext"
+    },
+    "fetchDataFromAdobe" :{
+        "url": "https://platform.adobe.io:443/data/foundation/export/files/01J44B3JKH2B15T77VBQPV7FZG-DE1?path=attempt-01J4GD83MHM4FR3SFTQZV3ZEJR_part-00000-3408bacd-f4e7-4479-81ae-093155d92cca-c000.snappy.parquet",
+        "sandbox_name":"rapp4"
     }
 }
