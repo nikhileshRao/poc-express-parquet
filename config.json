@@ -1,0 +1,7 @@
+{
+    "getAccessToken" : {
+        "url": "https://ims-na1.adobelogin.com/ims/token/v3",
+        "grant_type" : "client_credentials",
+        "scope":  "cjm.suppression_service.client.delete,cjm.suppression_service.client.all,openid,session,AdobeID,read_organizations,additional_info.projectedProductContext"
+    }
+}
