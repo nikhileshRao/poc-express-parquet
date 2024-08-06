@@ -1,42 +1,78 @@
 const Config = require('../config.json');
 const dotenv = require('dotenv');
+const fs = require('fs-extra');
+const path = require('path');
+const express = require('express');
 
+const app = express();
 dotenv.config();
 
-const bodyData = {
-    grant_type: Config?.getAccessToken?.grant_type,
-    client_id: process.env.NEXT_PUBLIC_CLIENT_ID,
-    client_secret: process.env.NEXT_PUBLIC_CLIENT_SECRET,
-    scope: Config?.getAccessToken?.scope
+//Store jwt access token in env file
+const storeAccessToken = (accessToken) =>{
+ // Set the environment variable and override any existing value
+  process.env.NEXT_PUBLIC_ADOBE_JWT_TOKEN = accessToken;
+
+  // Update value in .env file
+  const envFilePath = path.join(__dirname,'../', '.env');
+  const existingEnv = fs.readFileSync(envFilePath, 'utf8');
+  const updatedEnv = existingEnv.replace(
+    /^NEXT_PUBLIC_ADOBE_JWT_TOKEN=.*/m,
+    `NEXT_PUBLIC_ADOBE_JWT_TOKEN=${accessToken}`
+  );
+  fs.writeFileSync(envFilePath, updatedEnv, 'utf8');
+  console.log("Data has been written to .env")
 }
 
-const formBody = Object.keys(bodyData).map(key => 
-    encodeURIComponent(key) + '=' + encodeURIComponent(bodyData[key])
-).join('&');
+app.get('/fetch-jwt-accesstoken', async (req, res) => {
+    try{
+        const bodyData = {
+            grant_type: Config?.getAccessToken?.grant_type,
+            client_id: process.env.NEXT_PUBLIC_CLIENT_ID,
+            client_secret: process.env.NEXT_PUBLIC_CLIENT_SECRET,
+            scope: Config?.getAccessToken?.scope
+        }
 
-console.log("formBody" ,formBody , bodyData)
-//fetching jwt token from adobe
+        const formBody = Object.keys(bodyData).map(key => 
+            encodeURIComponent(key) + '=' + encodeURIComponent(bodyData[key])
+        ).join('&');
 
-const tokenData ={
-    method: 'POST',
-    url: `${Config?.getAccessToken?.url}`,
-    headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: formBody
-}
+        //fetching jwt token from adobe
+        const tokenData ={
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: formBody
+        }
 
-let accessToken; // Variable to store the obtained access token
+        const url = Config?.getAccessToken?.url;
 
-// Fetching the access token from Adobe
-fetch(tokenData.url, tokenData)
-    .then(response => response.json())
-    .then(data => {
-        accessToken = data.access_token; // Storing the access token
-        console.log("the access token is " , accessToken); // console log the jwt token access token
-    })
-    .catch(error => {
-        console.error('Error:', error); // Handling errors during the token fetching process
-    });
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: formBody
+          });
+      
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+      
+          const data = await response.json();
+          const accessToken = data.access_token;
+      
+          console.log("The access token is", accessToken);
+          await storeAccessToken(accessToken);
 
+          res.json({ message: 'JWT Access token fetched and stored successfully', accessToken });
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ error: 'An error occurred while fetching the access token' });
+    }
+});
 
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});

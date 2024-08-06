@@ -14,17 +14,17 @@ app.get('/read-parquet', async (req, res) => {
         // Open and read the Parquet file
         const reader = await parquet.ParquetReader.openFile(filePath);
         const cursor = reader.getCursor();
-        let record = null;
+        const data = [];
 
         // Read and log each record
         while (record = await cursor.next()) {
+            data.push(record);
             console.log(record);
         }
 
         await reader.close();
 
-        // Send a simple response to indicate success
-        res.send('Parquet file data has been logged to the console.');
+        res.json({ message: 'Parquet file data is', data});
     } catch (err) {
         console.error(err);
         res.status(500).send('Error reading Parquet file');
