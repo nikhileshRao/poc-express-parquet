@@ -1,10 +1,9 @@
 const Config = require('../config.json');
 const dotenv = require('dotenv');
 const express = require('express');
+const router = express.Router();
 
 dotenv.config();
-const app = express();
-const port = 3000;
 
 // Fetching the access token from Adobe
  const fetchAccessToken = async () => {
@@ -32,15 +31,13 @@ const port = 3000;
 }
 
 // Route to fetch data from Adobe
-app.get('/fetch-data-from-adobe', async (req, res) => {
+router.get('/fetch-data-from-adobe', async (req, res) => {
     try {
         const data = await fetchAccessToken();
-        res.send({ message: 'Data fetched successfully please check console'});
+        res.status(200).json({ message: 'Data fetched successfully please check console'});
     } catch (error) {
         res.status(500).send({ error: 'Error fetching data' });
     }
 });
 
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
-});
+module.exports = router
