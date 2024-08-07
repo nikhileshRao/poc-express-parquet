@@ -1,5 +1,2 @@
-This repository currently contains 3 scripts:
-
-"retrieve-data": to retrieve data from a parquet file
-"fetch-Access-Token": to retrieve jwt access token
-"fetch-data-adobe": to retrieve data from adobe api
+This repo is used as a POC.
+We are currently using node express js and to start the server use npm start
