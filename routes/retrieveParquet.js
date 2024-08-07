@@ -1,12 +1,11 @@
 const express = require('express');
+const router = express.Router();
 const path = require('path');
 const parquet = require('parquetjs');
 
-const app = express();
-const port = 3000;
 
 // Route to read and parse the Parquet file
-app.get('/read-parquet', async (req, res) => {
+router.get('/read-parquet', async (req, res) => {
     try {
         // Path to your Parquet file
         const filePath = path.join(__dirname,'../data', 'sample.parquet');
@@ -23,14 +22,12 @@ app.get('/read-parquet', async (req, res) => {
         }
 
         await reader.close();
-
-        res.json({ message: 'Parquet file data is', data});
+        
+        res.status(200).json({ message: 'Parquet file data is', data});
     } catch (err) {
         console.error(err);
         res.status(500).send('Error reading Parquet file');
     }
 });
 
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
-});
+module.exports = router

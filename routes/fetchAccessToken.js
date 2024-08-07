@@ -3,8 +3,8 @@ const dotenv = require('dotenv');
 const fs = require('fs-extra');
 const path = require('path');
 const express = require('express');
+const router = express.Router();
 
-const app = express();
 dotenv.config();
 
 //Store jwt access token in env file
@@ -23,7 +23,7 @@ const storeAccessToken = (accessToken) =>{
   console.log("Data has been written to .env")
 }
 
-app.get('/fetch-jwt-accesstoken', async (req, res) => {
+router.get('/fetch-jwt-accesstoken', async (req, res) => {
     try{
         const bodyData = {
             grant_type: Config?.getAccessToken?.grant_type,
@@ -65,14 +65,11 @@ app.get('/fetch-jwt-accesstoken', async (req, res) => {
           console.log("The access token is", accessToken);
           await storeAccessToken(accessToken);
 
-          res.json({ message: 'JWT Access token fetched and stored successfully', accessToken });
+          res.status(200).json({ message: 'JWT Access token fetched and stored successfully', accessToken });
     } catch (error) {
         console.error('Error:', error);
         res.status(500).json({ error: 'An error occurred while fetching the access token' });
     }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+module.exports = router
