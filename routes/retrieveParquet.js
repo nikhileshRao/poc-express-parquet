@@ -18,7 +18,6 @@ router.get('/read-parquet', async (req, res) => {
         // Read and log each record
         while (record = await cursor.next()) {
             data.push(record);
-            console.log(record);
         }
 
         await reader.close();

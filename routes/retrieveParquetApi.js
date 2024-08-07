@@ -2,6 +2,7 @@ const Config = require('../config.json');
 const dotenv = require('dotenv');
 const express = require('express');
 const router = express.Router();
+const parquet = require('parquetjs-lite');
 
 dotenv.config();
 
@@ -21,10 +22,23 @@ dotenv.config();
             }
         });
 
-        const data = await response.text();
-        //Logging data fetched from api
-        console.log("the data", data)
-    }
+        const buffer = await response.arrayBuffer();
+        const nodeBuffer = Buffer.from(buffer);
+
+        const reader = await parquet.ParquetReader.openBuffer(nodeBuffer);
+
+        // Read all records
+        const records = [];
+        const cursor = reader.getCursor();
+        let record = null;
+        while (record = await cursor.next()) {
+        records.push(record);
+        console.log("Records pushed" , records)
+        }
+
+        // Close the reader
+        await reader.close();;
+        }
     catch(e){
         console.log("Error")
     }
